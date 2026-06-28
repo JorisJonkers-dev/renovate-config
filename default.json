@@ -1,0 +1,86 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Shared Renovate preset for JorisJonkers-dev repositories.",
+  "extends": ["config:recommended", ":semanticCommits", ":dependencyDashboard"],
+  "timezone": "Etc/UTC",
+  "schedule": ["after 02:00 and before 06:00 every weekday"],
+  "rangeStrategy": "pin",
+  "minimumReleaseAge": "7 days",
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 8,
+  "branchConcurrentLimit": 8,
+  "rebaseWhen": "conflicted",
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["dependencies", "security"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 05:00 on monday"]
+  },
+  "flux": {
+    "managerFilePatterns": [
+      "/(^|/)cluster/flux/.+\\.ya?ml$/",
+      "/(^|/)platform/cluster/flux/.+\\.ya?ml$/"
+    ]
+  },
+  "kustomize": {
+    "managerFilePatterns": [
+      "/(^|/)cluster/flux/.+/kustomization\\.ya?ml$/",
+      "/(^|/)platform/cluster/flux/.+/kustomization\\.ya?ml$/"
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "Group routine minor and patch updates.",
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "minor and patch dependencies",
+      "addLabels": ["routine-update"]
+    },
+    {
+      "description": "Require dashboard approval for majors.",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
+      "addLabels": ["major-update"]
+    },
+    {
+      "description": "Group JorisJonkers-dev shared artifacts across Maven, npm, Actions, and GHCR.",
+      "matchPackageNames": [
+        "/^@jorisjonkers-dev\\//",
+        "/^dev\\.jorisjonkers([:.].*)?$/",
+        "/^ghcr\\.io\\/jorisjonkers-dev\\//",
+        "JorisJonkers-dev/github-workflows",
+        "JorisJonkers-dev/api-contract-checks"
+      ],
+      "groupName": "jorisjonkers-dev shared artifacts",
+      "addLabels": ["jorisjonkers-platform"]
+    },
+    {
+      "description": "Do not update legacy ExtraToast coordinates during cutover; executors rename them instead.",
+      "matchPackageNames": [
+        "/^@extratoast\\//",
+        "/^dev\\.extratoast([:.].*)?$/",
+        "/^com\\.extratoast([:.].*)?$/",
+        "/^ghcr\\.io\\/extratoast\\//",
+        "ExtraToast/github-workflows",
+        "ExtraToast/api-contract-checks"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Pin GitHub Actions to immutable refs.",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
+    },
+    {
+      "description": "Homelab deploy image tag PRs are gated by GitOps validation.",
+      "matchManagers": ["custom.regex", "flux", "kustomize"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/^ghcr\\.io\\/jorisjonkers-dev\\//"],
+      "groupName": "homelab image tags",
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "images",
+      "addLabels": ["deploy", "homelab"]
+    }
+  ]
+}
