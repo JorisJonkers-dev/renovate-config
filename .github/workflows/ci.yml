@@ -1,37 +1,40 @@
-name: CI
-on:
-  pull_request:
-  push:
-    branches: [main]
-  workflow_dispatch:
-permissions:
-  contents: read
-jobs:
-  validate-json:
-    name: Validate JSON
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
+name: 'CI'
+
+'on':
+  'pull_request':
+  'push':
+    'branches': ['main']
+  'workflow_dispatch':
+
+'permissions':
+  'contents': 'read'
+
+'jobs':
+  'validate-json':
+    'name': 'Validate JSON'
+    'runs-on': 'ubuntu-latest'
+    'steps':
+      - 'uses': 'actions/checkout@v6'
+      - 'run': |
           python3 -m json.tool default.json >/dev/null
           python3 -m json.tool renovate.json >/dev/null
           python3 -m json.tool release-please-config.json >/dev/null
           python3 -m json.tool .release-please-manifest.json >/dev/null
-  renovate-validator:
-    name: Renovate Config Validator
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - run: npx --yes --package renovate renovate-config-validator default.json renovate.json
-  pipeline-complete:
-    name: Pipeline Complete
-    if: always()
-    needs: [validate-json, renovate-validator]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
+  'renovate-validator':
+    'name': 'Renovate Config Validator'
+    'runs-on': 'ubuntu-latest'
+    'steps':
+      - 'uses': 'actions/checkout@v6'
+      - 'uses': 'actions/setup-node@v6'
+        'with':
+          'node-version': '22'
+      - 'run': 'npx --yes --package renovate renovate-config-validator default.json renovate.json'
+  'pipeline-complete':
+    'name': 'Pipeline Complete'
+    'if': '${{ always() }}'
+    'needs': ['validate-json', 'renovate-validator']
+    'runs-on': 'ubuntu-latest'
+    'steps':
+      - 'uses': 're-actors/alls-green@release/v1'
+        'with':
+          'jobs': '${{ toJSON(needs) }}'
