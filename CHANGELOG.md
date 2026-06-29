@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.2.0...v0.3.0) (2026-06-29)
+
+
+### Features
+
+* add deploy-v2 renovate managers ([#5](https://github.com/JorisJonkers-dev/renovate-config/issues/5)) ([49a180d](https://github.com/JorisJonkers-dev/renovate-config/commit/49a180d08ca032808a227e5b4613354dd5c05319))
+
 ## [0.2.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.1.0...v0.2.0) (2026-06-28)
 
 
