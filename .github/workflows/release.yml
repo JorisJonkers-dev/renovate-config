@@ -1,25 +1,28 @@
-name: Release
-on:
-  push:
-    branches: [main]
-permissions:
-  contents: write
-  pull-requests: write
-jobs:
-  release-please:
-    runs-on: ubuntu-latest
-    steps:
+name: 'Release'
+
+'on':
+  'push':
+    'branches': ['main']
+
+'permissions':
+  'contents': 'write'
+  'pull-requests': 'write'
+
+'jobs':
+  'release-please':
+    'runs-on': 'ubuntu-latest'
+    'steps':
       # Mint a GitHub App token so the release PR is authored by the app, not the
-      # built-in GITHUB_TOKEN — otherwise GitHub will not trigger CI on the PR and
-      # the required "Pipeline Complete" check can never go green. No fallback on
-      # purpose: a missing RELEASE_APP_* secret must fail loudly, not degrade silently.
-      - uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ secrets.RELEASE_APP_ID }}
-          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
-      - uses: googleapis/release-please-action@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+      # built-in GITHUB_TOKEN. Otherwise GitHub will not trigger CI on the PR and
+      # the required Pipeline Complete check can never go green. No fallback on
+      # purpose: missing RELEASE_APP_* secrets must fail loudly.
+      - 'uses': 'actions/create-github-app-token@v3'
+        'id': 'app-token'
+        'with':
+          'app-id': '${{ secrets.RELEASE_APP_ID }}'
+          'private-key': '${{ secrets.RELEASE_APP_PRIVATE_KEY }}'
+      - 'uses': 'googleapis/release-please-action@v5'
+        'with':
+          'token': '${{ steps.app-token.outputs.token }}'
+          'config-file': 'release-please-config.json'
+          'manifest-file': '.release-please-manifest.json'

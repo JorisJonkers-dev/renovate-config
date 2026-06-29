@@ -3,6 +3,6 @@
   "extends": ["config:recommended", ":semanticCommits", ":dependencyDashboard"],
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
-  "labels": ["dependencies"],
+  "labels": ["dependencies", "type: chore", "component: dependencies"],
   "lockFileMaintenance": { "enabled": true }
 }

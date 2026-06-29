@@ -6,45 +6,117 @@
   "schedule": ["after 02:00 and before 06:00 every weekday"],
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
-  "labels": ["dependencies"],
+  "labels": ["dependencies", "type: chore", "component: dependencies"],
+  "ignorePaths": ["**/cluster/flux/**", "**/platform/cluster/flux/**"],
   "prConcurrentLimit": 8,
   "branchConcurrentLimit": 8,
   "rebaseWhen": "conflicted",
   "vulnerabilityAlerts": {
     "enabled": true,
-    "labels": ["dependencies", "security"]
+    "labels": ["dependencies", "type: bug", "component: dependencies", "priority: P0"]
   },
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 05:00 on monday"]
   },
-  "flux": {
-    "managerFilePatterns": [
-      "/(^|/)cluster/flux/.+\\.ya?ml$/",
-      "/(^|/)platform/cluster/flux/.+\\.ya?ml$/"
-    ]
-  },
-  "kustomize": {
-    "managerFilePatterns": [
-      "/(^|/)cluster/flux/.+/kustomization\\.ya?ml$/",
-      "/(^|/)platform/cluster/flux/.+/kustomization\\.ya?ml$/"
-    ]
-  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track deploy-v2 OCI bundle and bundle-derived image refs in deployment locks.",
+      "managerFilePatterns": ["/(^|/)deployment\\.lock\\.ya?ml$/"],
+      "matchStrings": [
+        "(?:bundle|oci|ref|image|repository):\\s*[\"']?(?<depName>(?:ghcr\\.io|docker\\.io|quay\\.io|registry\\.k8s\\.io)\\/[^\\s\"'@:]+(?:\\/[^\\s\"'@:]+)*):(?<currentValue>[^\\s\"'@]+)(?:@sha256:[a-f0-9]{64})?[\"']?"
+      ],
+      "datasourceTemplate": "docker",
+      "depTypeTemplate": "deploy-lock"
+    },
+    {
+      "customType": "regex",
+      "description": "Track collection image pins outside rendered Flux output.",
+      "managerFilePatterns": [
+        "/(^|/)(collections|deploy/collections|deployment/collections)/.+\\.ya?ml$/",
+        "/(^|/)deployment-sources\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "(?:image|repository):\\s*[\"']?(?<depName>(?:ghcr\\.io|docker\\.io|quay\\.io|registry\\.k8s\\.io)\\/[^\\s\"'@:]+(?:\\/[^\\s\"'@:]+)*):(?<currentValue>[^\\s\"'@]+)(?:@sha256:[a-f0-9]{64})?[\"']?"
+      ],
+      "datasourceTemplate": "docker",
+      "depTypeTemplate": "collection-image"
+    },
+    {
+      "customType": "regex",
+      "description": "Track collection Helm chart pins outside rendered Flux output.",
+      "managerFilePatterns": [
+        "/(^|/)(collections|deploy/collections|deployment/collections)/.+\\.ya?ml$/",
+        "/(^|/)deployment-sources\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "(?:chart|name):\\s*[\"']?(?<depName>[a-z0-9._-]+(?:\\/[a-z0-9._-]+)*)[\"']?\\s*\\n\\s*(?:version|chartVersion):\\s*[\"']?(?<currentValue>[^\\s\"']+)[\"']?"
+      ],
+      "datasourceTemplate": "helm",
+      "depTypeTemplate": "collection-chart"
+    },
+    {
+      "customType": "regex",
+      "description": "Track platform-blueprints source refs in deploy-v2 source files.",
+      "managerFilePatterns": [
+        "/(^|/)deployment-sources\\.ya?ml$/",
+        "/(^|/)deployment\\.lock\\.ya?ml$/",
+        "/(^|/)deploy/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "(?:platform-blueprints|platformBlueprints|blueprints):[\\s\\S]{0,200}?(?:ref|version|tag):\\s*[\"']?(?<currentValue>[^\\s\"']+)[\"']?"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "JorisJonkers-dev/platform-blueprints",
+      "depTypeTemplate": "deploy-source"
+    },
+    {
+      "customType": "regex",
+      "description": "Track homelab-hosts source refs in deploy-v2 source files.",
+      "managerFilePatterns": [
+        "/(^|/)deployment-sources\\.ya?ml$/",
+        "/(^|/)deployment\\.lock\\.ya?ml$/",
+        "/(^|/)deploy/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "(?:homelab-hosts|homelabHosts|hosts):[\\s\\S]{0,200}?(?:ref|version|tag):\\s*[\"']?(?<currentValue>[^\\s\"']+)[\"']?"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "JorisJonkers-dev/homelab-hosts",
+      "depTypeTemplate": "deploy-source"
+    },
+    {
+      "customType": "regex",
+      "description": "Track node-contract lock metadata produced from homelab-hosts.",
+      "managerFilePatterns": [
+        "/(^|/)deployment-sources\\.ya?ml$/",
+        "/(^|/)deployment\\.lock\\.ya?ml$/",
+        "/(^|/)node-contract\\.lock\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "(?:node-contract|nodeContract):[\\s\\S]{0,200}?(?:ref|version|tag):\\s*[\"']?(?<currentValue>[^\\s\"']+)[\"']?"
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "JorisJonkers-dev/homelab-hosts",
+      "depTypeTemplate": "node-contract"
+    }
+  ],
   "packageRules": [
     {
       "description": "Group routine minor and patch updates.",
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "minor and patch dependencies",
-      "addLabels": ["routine-update"]
+      "addLabels": ["priority: P2"]
     },
     {
       "description": "Require dashboard approval for majors.",
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true,
-      "addLabels": ["major-update"]
+      "addLabels": ["priority: P1", "status: needs-info"]
     },
     {
-      "description": "Group JorisJonkers-dev shared artifacts across Maven, npm, Actions, and GHCR.",
+      "description": "Group first-party JorisJonkers-dev artifacts.",
       "matchPackageNames": [
         "/^@jorisjonkers-dev\\//",
         "/^dev\\.jorisjonkers([:.].*)?$/",
@@ -53,7 +125,54 @@
         "JorisJonkers-dev/api-contract-checks"
       ],
       "groupName": "jorisjonkers-dev shared artifacts",
-      "addLabels": ["jorisjonkers-platform"]
+      "addLabels": ["area: shared-libs"]
+    },
+    {
+      "description": "Group GitHub Actions runtime updates together.",
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions dependencies",
+      "addLabels": ["area: tooling"]
+    },
+    {
+      "description": "Group reusable github-workflows refs together.",
+      "matchPackageNames": ["JorisJonkers-dev/github-workflows"],
+      "groupName": "github-workflows reusable workflows",
+      "addLabels": ["area: tooling"]
+    },
+    {
+      "description": "Group foundation tooling releases together.",
+      "matchPackageNames": [
+        "JorisJonkers-dev/gradle-conventions",
+        "JorisJonkers-dev/openapi-client-gradle",
+        "@jorisjonkers-dev/vue-web-commons",
+        "/^dev\\.jorisjonkers([:.].*)?(gradle-conventions|openapi-client-gradle)([:.].*)?$/"
+      ],
+      "groupName": "jorisjonkers foundation tooling",
+      "addLabels": ["area: shared-libs"]
+    },
+    {
+      "description": "Group generated API client package updates together.",
+      "matchPackageNames": [
+        "/^@jorisjonkers-dev\\/(agents|auth|knowledge)-.*client/",
+        "/^dev\\.jorisjonkers([:.].*)?(agents|auth|knowledge)([:.].*)?client([:.].*)?$/"
+      ],
+      "groupName": "jorisjonkers api clients",
+      "addLabels": ["area: shared-libs"]
+    },
+    {
+      "description": "Group deploy-v2 lock, source, collection, and node-contract pins.",
+      "matchManagers": ["custom.regex"],
+      "matchDepTypes": [
+        "deploy-lock",
+        "collection-image",
+        "collection-chart",
+        "deploy-source",
+        "node-contract"
+      ],
+      "groupName": "deploy v2 source pins",
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deploy",
+      "addLabels": ["area: deploy"]
     },
     {
       "description": "Do not update legacy ExtraToast coordinates during cutover; executors rename them instead.",
@@ -71,16 +190,6 @@
       "description": "Pin GitHub Actions to immutable refs.",
       "matchManagers": ["github-actions"],
       "pinDigests": true
-    },
-    {
-      "description": "Homelab deploy image tag PRs are gated by GitOps validation.",
-      "matchManagers": ["custom.regex", "flux", "kustomize"],
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/^ghcr\\.io\\/jorisjonkers-dev\\//"],
-      "groupName": "homelab image tags",
-      "semanticCommitType": "chore",
-      "semanticCommitScope": "images",
-      "addLabels": ["deploy", "homelab"]
     }
   ]
 }
