@@ -1,29 +1,51 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "description": "Shared Renovate preset for JorisJonkers-dev repositories.",
-  "extends": ["config:recommended", ":semanticCommits", ":dependencyDashboard"],
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":dependencyDashboard"
+  ],
   "timezone": "Etc/UTC",
-  "schedule": ["after 02:00 and before 06:00 every weekday"],
+  "schedule": [
+    "after 02:00 and before 06:00 every weekday"
+  ],
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
-  "labels": ["dependencies", "type: chore", "component: dependencies"],
-  "ignorePaths": ["**/cluster/flux/**", "**/platform/cluster/flux/**"],
+  "labels": [
+    "dependencies",
+    "type: chore",
+    "component: dependencies"
+  ],
+  "ignorePaths": [
+    "**/cluster/flux/**",
+    "**/platform/cluster/flux/**"
+  ],
   "prConcurrentLimit": 8,
   "branchConcurrentLimit": 8,
   "rebaseWhen": "conflicted",
   "vulnerabilityAlerts": {
     "enabled": true,
-    "labels": ["dependencies", "type: bug", "component: dependencies", "priority: P0"]
+    "labels": [
+      "dependencies",
+      "type: bug",
+      "component: dependencies",
+      "priority: P0"
+    ]
   },
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 05:00 on monday"]
+    "schedule": [
+      "before 05:00 on monday"
+    ]
   },
   "customManagers": [
     {
       "customType": "regex",
       "description": "Track deploy-v2 OCI bundle and bundle-derived image refs in deployment locks.",
-      "managerFilePatterns": ["/(^|/)deployment\\.lock\\.ya?ml$/"],
+      "managerFilePatterns": [
+        "/(^|/)deployment\\.lock\\.ya?ml$/"
+      ],
       "matchStrings": [
         "(?:bundle|oci|ref|image|repository):\\s*[\"']?(?<depName>(?:ghcr\\.io|docker\\.io|quay\\.io|registry\\.k8s\\.io)\\/[^\\s\"'@:]+(?:\\/[^\\s\"'@:]+)*):(?<currentValue>[^\\s\"'@]+)(?:@sha256:[a-f0-9]{64})?[\"']?"
       ],
@@ -100,20 +122,60 @@
       "datasourceTemplate": "github-tags",
       "depNameTemplate": "JorisJonkers-dev/homelab-hosts",
       "depTypeTemplate": "node-contract"
+    },
+    {
+      "customType": "regex",
+      "description": "Convention plugins publish only to GitHub Packages, which Renovate cannot read without a registry token, so the maven lookup returns no-result. Track the source repository's release tags instead.",
+      "managerFilePatterns": [
+        "/(^|/)gradle/libs\\.versions\\.toml$/"
+      ],
+      "matchStrings": [
+        "(?:gradle-conventions|jorisjonkers-conventions)\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "JorisJonkers-dev/gradle-conventions",
+      "depTypeTemplate": "first-party-tooling",
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^v(?<version>.+)$"
+    },
+    {
+      "customType": "regex",
+      "description": "kotlin-commons artifacts publish only to GitHub Packages, so their maven lookup returns no-result. Track the source repository's release tags instead.",
+      "managerFilePatterns": [
+        "/(^|/)gradle/libs\\.versions\\.toml$/"
+      ],
+      "matchStrings": [
+        "(?:jorisjonkers-commons|kotlin-spring-commons)\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "JorisJonkers-dev/kotlin-spring-commons",
+      "depTypeTemplate": "first-party-tooling",
+      "versioningTemplate": "semver",
+      "extractVersionTemplate": "^v(?<version>.+)$"
     }
   ],
   "packageRules": [
     {
       "description": "Group routine minor and patch updates.",
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "minor and patch dependencies",
-      "addLabels": ["priority: P2"]
+      "addLabels": [
+        "priority: P2"
+      ]
     },
     {
       "description": "Require dashboard approval for majors.",
-      "matchUpdateTypes": ["major"],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "dependencyDashboardApproval": true,
-      "addLabels": ["priority: P1", "status: needs-info"]
+      "addLabels": [
+        "priority: P1",
+        "status: needs-info"
+      ]
     },
     {
       "description": "Group first-party JorisJonkers-dev artifacts.",
@@ -125,30 +187,43 @@
         "JorisJonkers-dev/api-contract-checks"
       ],
       "groupName": "jorisjonkers-dev shared artifacts",
-      "addLabels": ["area: shared-libs"]
+      "addLabels": [
+        "area: shared-libs"
+      ]
     },
     {
       "description": "Group GitHub Actions runtime updates together.",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "groupName": "github actions dependencies",
-      "addLabels": ["area: tooling"]
+      "addLabels": [
+        "area: tooling"
+      ]
     },
     {
       "description": "Group reusable github-workflows refs together.",
-      "matchPackageNames": ["JorisJonkers-dev/github-workflows"],
+      "matchPackageNames": [
+        "JorisJonkers-dev/github-workflows"
+      ],
       "groupName": "github-workflows reusable workflows",
-      "addLabels": ["area: tooling"]
+      "addLabels": [
+        "area: tooling"
+      ]
     },
     {
       "description": "Group foundation tooling releases together.",
       "matchPackageNames": [
         "JorisJonkers-dev/gradle-conventions",
         "JorisJonkers-dev/openapi-client-gradle",
+        "JorisJonkers-dev/kotlin-spring-commons",
         "@jorisjonkers-dev/vue-web-commons",
         "/^dev\\.jorisjonkers([:.].*)?(gradle-conventions|openapi-client-gradle)([:.].*)?$/"
       ],
       "groupName": "jorisjonkers foundation tooling",
-      "addLabels": ["area: shared-libs"]
+      "addLabels": [
+        "area: shared-libs"
+      ]
     },
     {
       "description": "Group generated API client package updates together.",
@@ -157,11 +232,15 @@
         "/^dev\\.jorisjonkers([:.].*)?(agents|auth|knowledge)([:.].*)?client([:.].*)?$/"
       ],
       "groupName": "jorisjonkers api clients",
-      "addLabels": ["area: shared-libs"]
+      "addLabels": [
+        "area: shared-libs"
+      ]
     },
     {
       "description": "Group deploy-v2 lock, source, collection, and node-contract pins.",
-      "matchManagers": ["custom.regex"],
+      "matchManagers": [
+        "custom.regex"
+      ],
       "matchDepTypes": [
         "deploy-lock",
         "collection-image",
@@ -172,7 +251,9 @@
       "groupName": "deploy v2 source pins",
       "semanticCommitType": "chore",
       "semanticCommitScope": "deploy",
-      "addLabels": ["area: deploy"]
+      "addLabels": [
+        "area: deploy"
+      ]
     },
     {
       "description": "Do not update legacy ExtraToast coordinates during cutover; executors rename them instead.",
@@ -188,8 +269,27 @@
     },
     {
       "description": "Pin GitHub Actions to immutable refs.",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "pinDigests": true
+    },
+    {
+      "description": "First-party maven coordinates resolve only from GitHub Packages, which needs a registry token Renovate does not have; the custom managers above follow the source repositories' tags instead. Disabled so the dashboards stop reporting no-result lookups.",
+      "matchDatasources": [
+        "maven"
+      ],
+      "matchPackageNames": [
+        "/^dev\\.jorisjonkers[.:]/"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Placeholder image ref for services that run outside the cluster; no such package is published, so the docker lookup returns no-result.",
+      "matchPackageNames": [
+        "ghcr.io/jorisjonkers-dev/external-service"
+      ],
+      "enabled": false
     }
   ]
 }
