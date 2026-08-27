@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.3.0...v0.3.1) (2026-08-27)
+
+
+### Bug Fixes
+
+* **renovate:** resolve first-party versions from tags, not GitHub Packages ([#8](https://github.com/JorisJonkers-dev/renovate-config/issues/8)) ([c1946e5](https://github.com/JorisJonkers-dev/renovate-config/commit/c1946e54360363f1d0b4151898029d461abd1d61))
+
 ## [0.3.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.2.0...v0.3.0) (2026-06-29)
 
 
