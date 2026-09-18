@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.3.1...v0.4.0) (2026-09-18)
+
+
+### Features
+
+* publish first-party releases without a soak period ([#15](https://github.com/JorisJonkers-dev/renovate-config/issues/15)) ([6259f1b](https://github.com/JorisJonkers-dev/renovate-config/commit/6259f1ba76a3f250f3fc653db6b70ee4da155485))
+
 ## [0.3.1](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.3.0...v0.3.1) (2026-08-27)
 
 
