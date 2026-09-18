@@ -4,5 +4,17 @@
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
   "labels": ["dependencies", "type: chore", "component: dependencies"],
-  "lockFileMaintenance": { "enabled": true }
+  "lockFileMaintenance": { "enabled": true },
+  "packageRules": [
+    {
+      "description": "First-party JorisJonkers-dev releases skip the soak period. A release from this org has already passed its own repository's pipeline and release gate, so minimumReleaseAge only delays propagation of changes we published ourselves. Third-party packages keep the 7-day wait.",
+      "matchPackageNames": [
+        "/^@jorisjonkers-dev\\//i",
+        "/^dev\\.jorisjonkers([:.].*)?$/i",
+        "/^ghcr\\.io\\/jorisjonkers-dev\\//i",
+        "/^jorisjonkers-dev\\//i"
+      ],
+      "minimumReleaseAge": null
+    }
+  ]
 }
