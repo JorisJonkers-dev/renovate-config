@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.3.1...v0.4.0) (2026-09-22)
+
+
+### Features
+
+* publish first-party releases without a soak period ([#15](https://github.com/JorisJonkers-dev/renovate-config/issues/15)) ([6259f1b](https://github.com/JorisJonkers-dev/renovate-config/commit/6259f1ba76a3f250f3fc653db6b70ee4da155485))
+
+
+### Bug Fixes
+
+* stop proposing first-party npm bumps Renovate cannot complete ([#17](https://github.com/JorisJonkers-dev/renovate-config/issues/17)) ([51858f6](https://github.com/JorisJonkers-dev/renovate-config/commit/51858f67f5ec89c1b8a96347906e0a84b5a202ad))
+
 ## [0.3.1](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.3.0...v0.3.1) (2026-08-27)
 
 
