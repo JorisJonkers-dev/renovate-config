@@ -285,6 +285,16 @@
       "enabled": false
     },
     {
+      "description": "First-party npm packages publish only to GitHub Packages, which needs a registry token Renovate does not have, so every lookup returns no-result and the pnpm lockfile cannot be regenerated either — a dependency PR then lands with package.json edited and pnpm-lock.yaml stale, failing CI with ERR_PNPM_OUTDATED_LOCKFILE. These bumps are done by hand when a client is released. See hostRules in the README for the fix that would re-enable them.",
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "/^@jorisjonkers-dev\\//"
+      ],
+      "enabled": false
+    },
+    {
       "description": "Placeholder image ref for services that run outside the cluster; no such package is published, so the docker lookup returns no-result.",
       "matchPackageNames": [
         "ghcr.io/jorisjonkers-dev/external-service"
