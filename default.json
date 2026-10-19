@@ -39,6 +39,9 @@
       "before 05:00 on monday"
     ]
   },
+  "nix": {
+    "enabled": true
+  },
   "customManagers": [
     {
       "customType": "regex",
@@ -310,6 +313,32 @@
         "/^jorisjonkers-dev\\//i"
       ],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "Nix flake inputs: one weekly PR with every input that moved. Flake inputs track branches, so their git-refs updates carry no release timestamp and the 7-day soak cannot apply.",
+      "matchManagers": [
+        "nix"
+      ],
+      "groupName": "nix flake inputs",
+      "schedule": [
+        "before 05:00 on monday"
+      ],
+      "minimumReleaseAge": null,
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "nix",
+      "addLabels": [
+        "area: platform"
+      ]
+    },
+    {
+      "description": "Lock file maintenance would run a bare `nix flake update`, moving every input including ones a repository pins on purpose. The per-input updates above respect packageRules, so flake.lock is left to them.",
+      "matchManagers": [
+        "nix"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
+      "enabled": false
     }
   ]
 }

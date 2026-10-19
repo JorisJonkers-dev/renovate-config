@@ -57,6 +57,18 @@ With that in place, drop the two `enabled: false` rules and the maven custom
 managers: lookups resolve, lockfiles regenerate, and first-party bumps arrive
 like any other dependency.
 
+## Nix Flake Inputs
+
+The `nix` manager is enabled: every input in a `flake.lock` is tracked by its
+git ref, and the inputs that moved arrive together in one PR each Monday. Lock
+file maintenance is disabled for `nix`, because it runs a bare
+`nix flake update` that ignores package rules. To hold an input back, disable it
+in the repository's own `renovate.json` by input name:
+
+```json
+"packageRules": [{ "matchManagers": ["nix"], "matchDepNames": ["deploy-rs"], "enabled": false }]
+```
+
 ## Local Validation
 
 ```bash
