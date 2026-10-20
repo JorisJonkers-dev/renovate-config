@@ -159,6 +159,16 @@
   ],
   "packageRules": [
     {
+      "description": "Leave go.mod's go directive alone: it is the oldest Go a module accepts, and every module that requires it inherits it, so pinning it to the newest Go forces that Go on all consumers.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepTypes": [
+        "golang"
+      ],
+      "enabled": false
+    },
+    {
       "description": "Group routine minor and patch updates.",
       "matchUpdateTypes": [
         "minor",
