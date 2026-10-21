@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.5.0...v0.6.0) (2026-10-21)
+
+
+### Features
+
+* every update but a major merges itself once the required checks pass ([#22](https://github.com/JorisJonkers-dev/renovate-config/issues/22)) ([5a1aa60](https://github.com/JorisJonkers-dev/renovate-config/commit/5a1aa6097973411a0e93c5b8b4b43219cf159ea8))
+
 ## [0.5.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.4.0...v0.5.0) (2026-10-20)
 
 
