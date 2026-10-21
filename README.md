@@ -18,6 +18,16 @@ coordinates.
 }
 ```
 
+## Automerge
+
+Every update except a major merges itself once the repository's required checks pass. Renovate
+turns on GitHub's native auto-merge for the PR (`platformAutomerge`), so the `main` ruleset and its
+`Pipeline Complete` check still decide; nothing merges past a red or missing check. A repository
+needs **Allow auto-merge** enabled for that, which every estate repository has.
+
+Majors still wait for approval on the Dependency Dashboard and are merged by a person. A major can
+change behaviour that a green pipeline does not cover.
+
 ## GitHub Packages Is Not Readable By Renovate
 
 First-party artifacts — `@jorisjonkers-dev/*` npm packages and `dev.jorisjonkers`

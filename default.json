@@ -24,6 +24,9 @@
   "prConcurrentLimit": 8,
   "branchConcurrentLimit": 8,
   "rebaseWhen": "conflicted",
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": [
@@ -180,11 +183,12 @@
       ]
     },
     {
-      "description": "Require dashboard approval for majors.",
+      "description": "Require dashboard approval for majors, and a person to merge them: a major can change behaviour that a green pipeline does not cover.",
       "matchUpdateTypes": [
         "major"
       ],
       "dependencyDashboardApproval": true,
+      "automerge": false,
       "addLabels": [
         "priority: P1",
         "status: needs-info"
