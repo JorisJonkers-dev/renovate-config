@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.4.0...v0.5.0) (2026-10-20)
+
+
+### Features
+
+* update Nix flake inputs through Renovate, one grouped PR a week ([#19](https://github.com/JorisJonkers-dev/renovate-config/issues/19)) ([c390d9d](https://github.com/JorisJonkers-dev/renovate-config/commit/c390d9d6edb4f983b685cf4a039b6194dc84715c))
+
+
+### Bug Fixes
+
+* leave go.mod's go directive alone ([#21](https://github.com/JorisJonkers-dev/renovate-config/issues/21)) ([c0f4394](https://github.com/JorisJonkers-dev/renovate-config/commit/c0f439475413ae5ce091b73d640bc81203730adb))
+
 ## [0.4.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.3.1...v0.4.0) (2026-09-22)
 
 
