@@ -12,6 +12,34 @@
   ],
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
+  "npmrc": "registry=https://packages.jorisjonkers.dev/npm/\n@jorisjonkers-dev:registry=https://npm.pkg.github.com\n",
+  "hostRules": [
+    {
+      "description": "Estate package proxy: npm/pnpm lookups and lockfile updates. Bearer is the hostRules default.",
+      "hostType": "npm",
+      "matchHost": "https://packages.jorisjonkers.dev/npm/",
+      "token": "{{ secrets.PACKAGES_PROXY_TOKEN }}"
+    },
+    {
+      "description": "Estate package proxy: Maven Central and Gradle Plugin Portal lookups.",
+      "hostType": "maven",
+      "matchHost": "https://packages.jorisjonkers.dev/maven/",
+      "token": "{{ secrets.PACKAGES_PROXY_TOKEN }}"
+    },
+    {
+      "description": "Estate package proxy: PyPI lookups over HTTP Basic (user packages), the form pip and uv read from netrc.",
+      "hostType": "pypi",
+      "matchHost": "https://packages.jorisjonkers.dev/pypi/simple/",
+      "username": "packages",
+      "password": "{{ secrets.PACKAGES_PROXY_TOKEN }}"
+    },
+    {
+      "description": "Estate package proxy: Cargo sparse index lookups.",
+      "hostType": "crate",
+      "matchHost": "https://packages.jorisjonkers.dev/cargo/",
+      "token": "{{ secrets.PACKAGES_PROXY_TOKEN }}"
+    }
+  ],
   "labels": [
     "dependencies",
     "type: chore",
@@ -161,6 +189,39 @@
     }
   ],
   "packageRules": [
+    {
+      "description": "Package lookups for npm, Maven, PyPI and Cargo go through the estate package proxy, which never serves a version younger than 7 days. Go is not covered: Renovate's go lookups read GOPROXY from the environment and the hosted app cannot set it (see README).",
+      "matchDatasources": [
+        "npm"
+      ],
+      "registryUrls": [
+        "https://packages.jorisjonkers.dev/npm/"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "maven"
+      ],
+      "registryUrls": [
+        "https://packages.jorisjonkers.dev/maven/"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "pypi"
+      ],
+      "registryUrls": [
+        "https://packages.jorisjonkers.dev/pypi/simple/"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "crate"
+      ],
+      "registryUrls": [
+        "sparse+https://packages.jorisjonkers.dev/cargo/"
+      ]
+    },
     {
       "description": "Leave go.mod's go directive alone: it is the oldest Go a module accepts, and every module that requires it inherits it, so pinning it to the newest Go forces that Go on all consumers.",
       "matchManagers": [
