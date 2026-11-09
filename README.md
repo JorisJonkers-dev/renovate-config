@@ -68,6 +68,67 @@ With that in place, drop the two `enabled: false` rules and the maven custom
 managers: lookups resolve, lockfiles regenerate, and first-party bumps arrive
 like any other dependency.
 
+## Package Proxy
+
+Renovate resolves third-party packages through the estate package proxy,
+`https://packages.jorisjonkers.dev`, so no version younger than 7 days reaches a
+lookup or a lockfile through the proxy. `minimumReleaseAge: "7 days"` remains as a
+second layer for direct updates.
+
+| Manager | Lookups (`registryUrls`) | Credential (`hostRules`) |
+| --- | --- | --- |
+| npm / pnpm | `https://packages.jorisjonkers.dev/npm/` | Bearer, `hostType: npm` |
+| Maven / Gradle | `https://packages.jorisjonkers.dev/maven/` | Bearer, `hostType: maven` |
+| pip / uv (PyPI) | `https://packages.jorisjonkers.dev/pypi/simple/` | Basic, user `packages`, `hostType: pypi` |
+| Cargo | `sparse+https://packages.jorisjonkers.dev/cargo/` | Bearer, `hostType: crate` |
+
+The npm `.npmrc` is set to the proxy and keeps `@jorisjonkers-dev` on GitHub
+Packages, so lockfile resolution uses the proxy. First-party packages stay direct.
+
+Every credential is the Mend organization secret `PACKAGES_PROXY_TOKEN`, referenced
+as `{{ secrets.PACKAGES_PROXY_TOKEN }}`. The hosted app reads it from the web UI,
+not from this repository.
+
+### Admin action: add the secret
+
+An organization admin on Mend must add the secret once. Without it, every proxy
+request gets 401 and the proxy lookups fail.
+
+1. Open <https://developer.mend.io> and sign in with an account that is an admin of
+   the `JorisJonkers-dev` organization.
+2. Open the organization's settings page (identified by its "Installed Repositories"
+   table) and select **Settings**.
+3. Open **Credentials** and select **ADD SECRET**.
+4. Name it `PACKAGES_PROXY_TOKEN` and paste the proxy key issued for Renovate. Get
+   the key from the packages-system key owner, not from a local file. Do not paste it
+   into an issue, PR or chat.
+
+Sources: [Using Secrets with Mend Cloud Apps](https://docs.renovatebot.com/mend-hosted/credentials/),
+[Migrating encrypted secrets](https://docs.renovatebot.com/mend-hosted/migrating-secrets/).
+
+### What the hosted app cannot be configured to do
+
+- **Go.** Lookups read `GOPROXY` from the environment
+  ([go datasource](https://docs.renovatebot.com/modules/datasource/go/)). That needs
+  the `env` option, which is valid only when the deployment's `allowedEnv` lists the
+  name ([`env`](https://docs.renovatebot.com/configuration-options/#env),
+  [`allowedEnv`](https://docs.renovatebot.com/self-hosted-configuration/#allowedenv)).
+  The hosted community app does not document a way for a repository to set it, so
+  no `GOPROXY` is configured. Residual risk: `go mod tidy` and Go lookups can see
+  versions younger than 7 days from `proxy.golang.org`. `minimumReleaseAge` still
+  applies to direct Go updates.
+- **Gradle wrapper lockfile updates.** Renovate runs `./gradlew` for lockfile and
+  verification updates. The documented hostRules credentials are not passed into
+  Gradle, and no Gradle init script is written. The repository's own Gradle
+  configuration (the estate's `setup-java-gradle` init script in CI) decides what the
+  wrapper resolves. Residual risk: a Gradle lockfile update can resolve from the
+  public repositories.
+- **uv and Cargo artifacts.** The uv lock is resolved from the indexes declared in the
+  repository's `pyproject.toml` (`[[tool.uv.index]]`), and Cargo from the repository's
+  `.cargo/config` registries. The preset cannot change those files. Residual risk:
+  `uv lock` and `cargo update` can still use the public default index or
+  `crates.io` in a repository that does not declare the proxy.
+
 ## Nix Flake Inputs
 
 The `nix` manager is enabled: every input in a `flake.lock` is tracked by its
