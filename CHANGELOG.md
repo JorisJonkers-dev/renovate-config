@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.6.0...v0.7.0) (2026-11-09)
+
+
+### Features
+
+* resolve package lookups and lockfiles through the package proxy ([#26](https://github.com/JorisJonkers-dev/renovate-config/issues/26)) ([edf4904](https://github.com/JorisJonkers-dev/renovate-config/commit/edf4904b0581f17268c3e970207e141ac182d319))
+
 ## [0.6.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.5.0...v0.6.0) (2026-10-21)
 
 
