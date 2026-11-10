@@ -190,6 +190,12 @@
   ],
   "packageRules": [
     {
+      "description": "requires-python states which interpreters a project supports, so it is never pinned to a single release (a pin to an unreleased interpreter breaks uv and the lockfile update).",
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["requires-python"],
+      "enabled": false
+    },
+    {
       "description": "Package lookups for npm, Maven, PyPI and Cargo go through the estate package proxy, which never serves a version younger than 7 days. Go is not covered: Renovate's go lookups read GOPROXY from the environment and the hosted app cannot set it (see README).",
       "matchDatasources": [
         "npm"
