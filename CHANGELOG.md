@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.7.0...v0.7.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* **deps:** never pin requires-python ([#32](https://github.com/JorisJonkers-dev/renovate-config/issues/32)) ([4583771](https://github.com/JorisJonkers-dev/renovate-config/commit/4583771c831985fcbdec14fc06768e09a1b1f61c))
+
 ## [0.7.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.6.0...v0.7.0) (2026-11-09)
 
 
