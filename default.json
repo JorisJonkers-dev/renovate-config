@@ -190,6 +190,12 @@
   ],
   "packageRules": [
     {
+      "description": "Hold the Gradle wrapper below 9.8. Gradle 9.8 deprecates Configuration.setVisible, every released detekt Gradle plugin still calls it, and the shared JVM workflow runs --warning-mode=fail. Remove this rule once a detekt Gradle plugin release contains the fix from detekt/detekt#9577.",
+      "matchManagers": ["gradle-wrapper"],
+      "matchPackageNames": ["gradle"],
+      "allowedVersions": "<9.8"
+    },
+    {
       "description": "requires-python states which interpreters a project supports, so it is never pinned to a single release (a pin to an unreleased interpreter breaks uv and the lockfile update).",
       "matchManagers": ["pep621"],
       "matchDepTypes": ["requires-python"],
