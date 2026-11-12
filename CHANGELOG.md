@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.2](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.7.1...v0.7.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **gradle:** hold the wrapper below 9.8 until detekt supports it ([#34](https://github.com/JorisJonkers-dev/renovate-config/issues/34)) ([3c3b54b](https://github.com/JorisJonkers-dev/renovate-config/commit/3c3b54b4ded340997c4bd9852ef22b61ece534a7))
+* **hygiene:** never cancel a run of the required hygiene checks ([#39](https://github.com/JorisJonkers-dev/renovate-config/issues/39)) ([ed0ee24](https://github.com/JorisJonkers-dev/renovate-config/commit/ed0ee2413d03d30f41fc136c3e3cd8390557556d))
+
 ## [0.7.1](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.7.0...v0.7.1) (2026-11-10)
 
 
