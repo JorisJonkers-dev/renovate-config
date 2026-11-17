@@ -420,9 +420,13 @@
       ]
     },
     {
-      "description": "The same rule matched by crate name, because the Cargo manager reports the crate name as the dependency name.",
+      "description": "The same rule matched by crate name, because the Cargo manager reports the crate name as the dependency name. Only git sources: a crates.io crate with the same name keeps the soak.",
       "matchManagers": [
         "cargo"
+      ],
+      "matchDatasources": [
+        "github-tags",
+        "git-tags"
       ],
       "matchDepNames": [
         "loot-rs",
