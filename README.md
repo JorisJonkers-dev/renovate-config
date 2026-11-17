@@ -129,6 +129,16 @@ Sources: [Using Secrets with Mend Cloud Apps](https://docs.renovatebot.com/mend-
   `uv lock` and `cargo update` can still use the public default index or
   `crates.io` in a repository that does not declare the proxy.
 
+## First-Party Cargo Git Dependencies
+
+A Cargo dependency pinned by git tag to a JorisJonkers-dev repository (for example
+`loot-rs = { git = "https://github.com/JorisJonkers-dev/loot-rs", tag = "v0.5.0" }`) updates as soon
+as the new tag exists: no minimum release age, no schedule window. Two rules cover it, one by
+repository URL and one by crate name, because the Cargo manager reports the crate name as the
+dependency name. These updates form their own group, so a third-party crate still in its 7-day
+soak does not hold them back, and they merge themselves once the required checks pass.
+Third-party crates keep the soak.
+
 ## Nix Flake Inputs
 
 The `nix` manager is enabled: every input in a `flake.lock` is tracked by its
