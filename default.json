@@ -402,6 +402,42 @@
       "minimumReleaseAge": null
     },
     {
+      "description": "First-party Cargo git dependencies, matched by repository (the Cargo manager looks a github.com git dependency up as `JorisJonkers-dev/<repo>` through github-tags; other hosts keep the URL): a crate pinned to a JorisJonkers-dev repository by git tag updates as soon as the tag exists. No soak, no schedule window, its own group so third-party crates do not hold it back; it merges itself once the required checks pass.",
+      "matchManagers": [
+        "cargo"
+      ],
+      "matchPackageNames": [
+        "/^jorisjonkers-dev\\//i",
+        "/^https:\\/\\/github\\.com\\/jorisjonkers-dev\\//i"
+      ],
+      "minimumReleaseAge": null,
+      "schedule": [
+        "at any time"
+      ],
+      "groupName": "jorisjonkers-dev cargo git dependencies",
+      "addLabels": [
+        "area: shared-libs"
+      ]
+    },
+    {
+      "description": "The same rule matched by crate name, because the Cargo manager reports the crate name as the dependency name.",
+      "matchManagers": [
+        "cargo"
+      ],
+      "matchDepNames": [
+        "loot-rs",
+        "/^(nvmod|lodwright|ttwright)([-_].+)?$/"
+      ],
+      "minimumReleaseAge": null,
+      "schedule": [
+        "at any time"
+      ],
+      "groupName": "jorisjonkers-dev cargo git dependencies",
+      "addLabels": [
+        "area: shared-libs"
+      ]
+    },
+    {
       "description": "Nix flake inputs: one weekly PR with every input that moved. Flake inputs track branches, so their git-refs updates carry no release timestamp and the 7-day soak cannot apply.",
       "matchManagers": [
         "nix"
