@@ -29,6 +29,25 @@ next run after the checks pass, which can be a day later given the schedule abov
 Majors still wait for approval on the Dependency Dashboard and are merged by a person. A major can
 change behaviour that a green pipeline does not cover.
 
+## Submodules And Lockfiles
+
+Renovate's checkout has no submodules by default. In a repository whose Cargo workspace takes crates from submodules
+(rauls-trusty-toolbox, under `components/`), `cargo update` then fails with `no matching package named ...`, the PR
+arrives with `Cargo.toml` edited and `Cargo.lock` stale, and every `--locked` job fails (rauls-trusty-toolbox#309).
+
+The fix is `cloneSubmodules`, a repo-scoped option (default `false`). It is **not** set in this preset: several
+repositories that extend it carry many or private submodules (`workspace` has dozens, `coursework` includes
+`ExtraToast/*` repositories), and cloning those on every run is slow and can fail. A repository that needs it sets it
+in its own `renovate.json`:
+
+```json
+{ "extends": ["github>JorisJonkers-dev/renovate-config"], "cloneSubmodules": true }
+```
+
+A repository's own value overrides the preset's, so `"cloneSubmodules": false` there is the opt-out if it is ever set
+here. Submodules are cloned recursively with the credentials Renovate has for the host. Private submodules need extra
+setup (for example a `hostRules` entry for the host with a token that can read them); without it the clone fails.
+
 ## GitHub Packages Is Not Readable By Renovate
 
 First-party artifacts — `@jorisjonkers-dev/*` npm packages and `dev.jorisjonkers`
