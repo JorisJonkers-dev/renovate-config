@@ -31,14 +31,22 @@ change behaviour that a green pipeline does not cover.
 
 ## Submodules And Lockfiles
 
-`cloneSubmodules` is on. A repository whose Cargo workspace takes crates from git submodules (the toolbox's
-`components/`) cannot resolve its dependencies without them: with a bare checkout `cargo update` fails with
-`no matching package named ...`, Renovate raises the PR with `Cargo.toml` edited and `Cargo.lock` untouched, and
-every `--locked` job fails. Cloning the submodules lets the lockfile refresh run. A repository without submodules is
-unaffected: the option only applies to submodules Renovate detects.
+Renovate's checkout has no submodules by default. In a repository whose Cargo workspace takes crates from submodules
+(rauls-trusty-toolbox, under `components/`), `cargo update` then fails with `no matching package named ...`, the PR
+arrives with `Cargo.toml` edited and `Cargo.lock` stale, and every `--locked` job fails (rauls-trusty-toolbox#309).
 
-Renovate clones them with its own GitHub token, so a submodule in another private repository the app cannot read
-still fails; the symptom is the same `renovate/artifacts` failure, and that bump is done by hand.
+The fix is `cloneSubmodules`, a repo-scoped option (default `false`). It is **not** set in this preset: several
+repositories that extend it carry many or private submodules (`workspace` has dozens, `coursework` includes
+`ExtraToast/*` repositories), and cloning those on every run is slow and can fail. A repository that needs it sets it
+in its own `renovate.json`:
+
+```json
+{ "extends": ["github>JorisJonkers-dev/renovate-config"], "cloneSubmodules": true }
+```
+
+A repository's own value overrides the preset's, so `"cloneSubmodules": false` there is the opt-out if it is ever set
+here. Submodules are cloned recursively with the credentials Renovate has for the host. Private submodules need extra
+setup (for example a `hostRules` entry for the host with a token that can read them); without it the clone fails.
 
 ## GitHub Packages Is Not Readable By Renovate
 
