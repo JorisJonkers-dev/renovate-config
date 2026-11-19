@@ -29,6 +29,17 @@ next run after the checks pass, which can be a day later given the schedule abov
 Majors still wait for approval on the Dependency Dashboard and are merged by a person. A major can
 change behaviour that a green pipeline does not cover.
 
+## Submodules And Lockfiles
+
+`cloneSubmodules` is on. A repository whose Cargo workspace takes crates from git submodules (the toolbox's
+`components/`) cannot resolve its dependencies without them: with a bare checkout `cargo update` fails with
+`no matching package named ...`, Renovate raises the PR with `Cargo.toml` edited and `Cargo.lock` untouched, and
+every `--locked` job fails. Cloning the submodules lets the lockfile refresh run. A repository without submodules is
+unaffected: the option only applies to submodules Renovate detects.
+
+Renovate clones them with its own GitHub token, so a submodule in another private repository the app cannot read
+still fails; the symptom is the same `renovate/artifacts` failure, and that bump is done by hand.
+
 ## GitHub Packages Is Not Readable By Renovate
 
 First-party artifacts — `@jorisjonkers-dev/*` npm packages and `dev.jorisjonkers`
