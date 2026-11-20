@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.7.2...v0.8.0) (2026-11-20)
+
+
+### Features
+
+* update first-party Cargo git dependencies at once, without soak ([#42](https://github.com/JorisJonkers-dev/renovate-config/issues/42)) ([5532968](https://github.com/JorisJonkers-dev/renovate-config/commit/553296836cd17ec468eb3b93edc1ba8c267acbc4))
+
 ## [0.7.2](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.7.1...v0.7.2) (2026-11-12)
 
 
