@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.8.0...v0.8.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* **ci:** cancel superseded runs and skip label events ([#40](https://github.com/JorisJonkers-dev/renovate-config/issues/40)) ([fb46c83](https://github.com/JorisJonkers-dev/renovate-config/commit/fb46c8370140a1ecfc857bd6ce136135eec5f8cc))
+
 ## [0.8.0](https://github.com/JorisJonkers-dev/renovate-config/compare/v0.7.2...v0.8.0) (2026-11-20)
 
 
